@@ -1,0 +1,9 @@
+{
+    "path" : "~/RSqlServer",
+    "sortOrder" : [
+        {
+            "ascending" : true,
+            "columnIndex" : 2
+        }
+    ]
+}

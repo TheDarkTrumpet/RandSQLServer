@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "connectionStr <- \"Server=localhost;Initial Catalog=AdventureWorks2016;UID=rUser;Pwd=test\"\n\n# Read from SQL Server tables\ndataContext <- RxSqlServerData(table=\"Sales.vSalesPerson\", connectionString = connectionStr, rowsPerRead = 20000)\n\n# Debug: rxGetVarInfo(data=dataContext)\n\n# Open the source, read into data.\nrxOpen(dataContext)\ndataOut <- rxReadNext(dataContext)\nrxClose(dataContext)\n\n# Show some data\nsummary(dataOut)\nrequire(plyr)\nnames <- adply(dataOut, 1, function(x) { paste(x$FirstName, x$LastName, sep=' ') })$V1\nnamesDataTable <- data.frame(People = names)\n\n\n# Save it back. (not complete) -- note: check before ICC\nwriter <- RxSqlServerData(connectionString = connectionStr, table=\"SimpleUserList\", rowsPerRead=20000)\nrxDataStep(inData=namesDataTable, writer, overwrite=TRUE)\n\n\n##########################################################################################\n# Use trusted connections instead\n\ninstance_name <- \".\";\ndatabase_name <- \"AdventureWorks2016\";\nmyConnString <- paste(\"Server=\",instance_name, \";Database=\",database_name,\";Trusted_Connection=true;\",sep=\"\");\n\n# Set other variables used to define the compute context\nsqlWait = TRUE;\nsqlConsoleOutput = TRUE;\n\n# Read from a table\ndataContext2 <- RxSqlServerData(table=\"Sales.vSalesPerson\", connectionString = myConnString, rowsPerRead = 20000)\n\nrxOpen(dataContext2)\ndata <- rxReadNext(dataContext2)\nrxClose(dataContext2)\n\n##########################################################################################\n# Run stuff within SQL Server\nsqlCompute <- RxInSqlServer(connectionString = connectionStr, wait = TRUE , consoleOutput = TRUE,\n                            traceEnabled = TRUE, traceLevel = 7)\nrxSetComputeContext(sqlCompute)\nsummaryOfVSales <- rxSummary(formula=~.,data = dataContext)\n\n# Sets it back locally\nrxSetComputeContext(\"local\")\nsummaryOfVSalesLocal <- rxSummary(formula=~., data=dataOut)",
+    "created" : 1477700875702.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2229360596",
+    "id" : "88C1E9AA",
+    "lastKnownWriteTime" : 1477707040,
+    "last_content_update" : 1477707040977,
+    "path" : "~/RSqlServer/Demo2.R",
+    "project_path" : "Demo2.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

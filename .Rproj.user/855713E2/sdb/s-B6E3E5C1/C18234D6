@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "install.packages(\"RODBC\")\n\nlibrary(RODBC) \n\n# Connection strings\n# odbcDriverConnect('driver={SQL Server};server=localhost;Initial Catalog=AdventureWorks2016;UID=rUser;Pwd=test')\n\n# Method 1 - Connect with a specific user/pass\ndbhandle <- odbcDriverConnect('driver={SQL Server};server=localhost;Database=AdventureWorks2016;UID=rUser;Pwd=test')\nres <- sqlQuery(dbhandle, 'select * from Sales.vSalesPerson')\nclose(dbhandle)\n\n\n# Method 2 - Connect with a trusted connection\ndbhandle <- odbcDriverConnect('driver={SQL Server};server=localhost;Database=AdventureWorks2016;trusted_connection=true')\nres2 <- sqlQuery(dbhandle, 'select * from Sales.vSalesPerson')\nallData <- sqlFetch(dbhandle, \"Sales.VSalesPerson\")\nclose(dbhandle)\n\ndbhandle\nsummary(res2)\n\nlibrary(ggplot2)\nggplot(res2, aes(x = BusinessEntityID, y = SalesYTD)) + geom_line()\nplot(x = res2$BusinessEntityID, y=res2$SalesYTD)\n\n\n\n# K-Means Clustering\n\n# Load Data\ndbhandle <- odbcDriverConnect('driver={SQL Server};server=localhost;Database=AdventureWorks2016;trusted_connection=true')\nres2 <- sqlQuery(dbhandle, 'select * from Sales.vSalesPerson')\nallData <- sqlFetch(dbhandle, \"Sales.VSalesPerson\")\nclose(dbhandle)\n\n# install.packages(\"hsaur\")\nlibrary(cluster)\nlibrary(HSAUR)\nclusterData <- data.frame(BusinessEntityId = allData$BusinessEntityID, YTDAmt = allData$SalesYTD)\n\nkm    <- kmeans(clusterData,3)\ndissE <- daisy(clusterData)\ndE2   <- dissE^2\nsk2   <- silhouette(km$cl, dE2)\nplot(sk2)\n\n# install.packages(\"fpc\")\nlibrary(fpc)\nplotcluster(clusterData, km$cluster)",
+    "created" : 1477700851846.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1318896598",
+    "id" : "C18234D6",
+    "lastKnownWriteTime" : 1477768380,
+    "last_content_update" : 1477768380669,
+    "path" : "~/RSqlServer/Demo1.R",
+    "project_path" : "Demo1.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
