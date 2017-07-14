@@ -1,10 +1,13 @@
-connectionStr <- "Server=localhost;Initial Catalog=AdventureWorks2016;UID=rUser;Pwd=test"
+# connectionStr <- "Server=localhost;Initial Catalog=AdventureWorks;UID=rUser;Pwd=test"
+connectionStr <- "Driver={SQL Server Native Client 11.0};Server=localhost;Database=AdventureWorks;trusted_connection=yes"
+
 
 # Read from SQL Server tables
 dataContext <- RxSqlServerData(table="Sales.vSalesPerson", connectionString = connectionStr, rowsPerRead = 20000)
 
 # Debug: rxGetVarInfo(data=dataContext)
 
+rxGetVarInfo(data=dataContext)
 # Open the source, read into data.
 rxOpen(dataContext)
 dataOut <- rxReadNext(dataContext)
